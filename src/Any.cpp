@@ -52,7 +52,7 @@ Any Any::operator==(const Any &other) const noexcept {
 }
 
 Any Any::operator!=(const Any &other) const noexcept {
-    return Any(ToString() != other.ToString())
+    return Any(ToString() != other.ToString());
 }
 
 Any Any::operator>(const Any &other) const noexcept {
