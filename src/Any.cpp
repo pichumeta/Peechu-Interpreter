@@ -52,31 +52,7 @@ Any Any::operator==(const Any &other) const noexcept {
 }
 
 Any Any::operator!=(const Any &other) const noexcept {
-    Any result = null_value;
-    const size_t type_code = m_any.type().hash_code();
-
-    if (type_code == bool_code) {
-        goto end;
-    }
-
-    if (type_code == int_code) {
-        goto end;
-    }
-
-    if (type_code == float_code) {
-        goto end;
-    }
-
-    if (type_code == string_code) {
-        goto end;
-    }
-
-    if (type_code == vector_code) {
-        goto end;
-    }
-
-    end:
-        return result;
+    return Any(ToString() != other.ToString())
 }
 
 Any Any::operator>(const Any &other) const noexcept {
