@@ -1,0 +1,2 @@
+var name = input("Please enter your name: ")
+println("Good morning:", name)

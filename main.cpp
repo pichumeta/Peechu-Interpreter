@@ -1,6 +1,5 @@
-#include <iostream>
+#include "src/Any.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+
 }
