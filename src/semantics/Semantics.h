@@ -5,4 +5,6 @@
 #ifndef SEMANTICS_H
 #define SEMANTICS_H
 
+#include "Tokens.h"
+
 #endif //SEMANTICS_H

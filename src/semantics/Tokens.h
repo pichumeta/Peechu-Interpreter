@@ -7,7 +7,9 @@
 
 #include <unordered_map>
 
-namespace tokens {
+#include "../utils/Utils.h"
+
+namespace semantics::tokens {
     enum class Tokens {
         // Keywords:
         Else,
@@ -17,6 +19,10 @@ namespace tokens {
         PassByReference,
         VariableInitialiser,
 
+        //
+        FunctionCall,
+        MemberAccess,
+
         // Maths unary operators:
         Decrement,
         Increment,
@@ -25,10 +31,12 @@ namespace tokens {
         Not,
 
         // Maths operators (left to right):
-        PointerToMember,
         Division,
         Multiplication,
         Remainder,
+
+        Addition,
+        Subtraction,
 
         // Comparison operators (left to right):
         // (relational)
@@ -59,7 +67,64 @@ namespace tokens {
         Space,
     };
 
+    inline const std::unordered_map<std::string, Tokens> keywords {
+        {"else", Tokens::Else},
+        {"fun", Tokens::Function},
+        {"if", Tokens::If},
+        {"loop", Tokens::Loop},
+        {"ref", Tokens::PassByReference},
+        {"let", Tokens::VariableInitialiser}
+    };
 
+    inline const std::unordered_map<std::string, Tokens> maths_unary_operators {
+        {"--", Tokens::Decrement},
+        {"++", Tokens::Increment}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> logical_unary_operators {
+        {"!", Tokens::Not}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> maths_operators {
+        {"/", Tokens::Division},
+        {"*", Tokens::Multiplication},
+        {"%", Tokens::Remainder},
+
+        {"+", Tokens::Addition},
+        {"-", Tokens::Subtraction}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> comparison_operators {
+        {">", Tokens::GreaterThan},
+        {">=", Tokens::GreaterThanOrEqualTo},
+        {"<", Tokens::LessThan},
+        {"<=", Tokens::LessThanOrEqualTo},
+
+        {"==", Tokens::EqualTo},
+        {"!=", Tokens::NotEqualTo}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> bitwise_operators {
+        {"&", Tokens::BitwiseAnd},
+        {"|", Tokens::BitwiseOr}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> logical_operators {
+        {"&&", Tokens::LogicalAnd},
+        {"||", Tokens::LogicalOr}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> separators {
+        {",", Tokens::Comma},
+        {"(", Tokens::OpenBracket},
+        {")", Tokens::ClosedBracket}
+    };
+
+    inline const std::unordered_map<std::string, Tokens> whitespace {
+        {"\r", Tokens::Flush},
+        {"\n", Tokens::NewLine},
+        {" ", Tokens::Space}
+    };
 }
 
 #endif //TOKENS_H

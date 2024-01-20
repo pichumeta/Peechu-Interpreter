@@ -9,4 +9,8 @@ add_executable(Peechu_Interpreter main.cpp
         src/Any.cpp
         src/Any.h
         src/semantics/Semantics.h
-        src/semantics/Tokens.h)
+        src/semantics/Tokens.h
+        src/interpreter/Token.h
+        src/semantics/Types.h
+        src/Variable.h
+        src/Variable.cpp)
