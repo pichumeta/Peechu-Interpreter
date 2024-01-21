@@ -32,28 +32,21 @@ public:
     Any operator/(const Any &other) const noexcept;
     Any operator%(const Any &other) const noexcept;
 
-    Any &operator[](const Any &other) const noexcept;
-
     [[nodiscard]] std::any any() const noexcept;
     void set_any(const std::any &any) noexcept;
 
     [[nodiscard]] bool ToBool() const noexcept;
     [[nodiscard]] double ToNumber() const noexcept;
     [[nodiscard]] std::string ToString() const noexcept;
+    [[nodiscard]] std::vector<Any> ToVector() const noexcept;
 
 private:
-    inline static Any null_value = nullptr;
-
     template<class T>
-    [[nodiscard]] T &AnyCast() const noexcept;
+    [[nodiscard]] T AnyCast() const noexcept;
 
     std::any m_any;
 };
 
-inline const size_t bool_code = typeid(bool).hash_code();
-inline const size_t int_code = typeid(int).hash_code();
-inline const size_t float_code = typeid(double).hash_code();
-inline const size_t string_code = typeid(std::string).hash_code();
-inline const size_t vector_code = typeid(std::vector<Any>).hash_code();
+inline const Any null_value(static_cast<std::any>(nullptr));
 
 #endif //ANY_H

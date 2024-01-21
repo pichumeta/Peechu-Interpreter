@@ -33,7 +33,7 @@ Any::Any(const std::string &literal) {
 }
 
 template<class T>
-T &Any::AnyCast() const noexcept {
+T Any::AnyCast() const noexcept {
     return std::any_cast<T>(*this);
 }
 
@@ -57,107 +57,86 @@ Any Any::operator>(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::int_code || type_code == semantics::types::float_code) {
+        result = Any(ToNumber() > other.ToNumber());
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::string_code) {
+        result = Any(ToString().length() > other.ToString().length());
         goto end;
     }
 
-    if (type_code == float_code) {
-        goto end;
-    }
+    if (type_code == semantics::types::vector_code)
+        result = Any(ToVector().size() > other.ToVector().size());
 
-    if (type_code == string_code) {
-        goto end;
-    }
-
-    if (type_code == vector_code) {
-        goto end;
-    }
-
-    end:
-        return result;
+end:
+    return result;
 }
 
 Any Any::operator>=(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::int_code || type_code == semantics::types::float_code) {
+        result = Any(ToNumber() >= other.ToNumber());
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::string_code) {
+        result = Any(ToString().length() >= other.ToString().length());
         goto end;
     }
 
-    if (type_code == float_code) {
-        goto end;
-    }
+    if (type_code == semantics::types::vector_code)
+        result = Any(ToVector().size() >= other.ToVector().size());
 
-    if (type_code == string_code) {
-        goto end;
-    }
-
-    if (type_code == vector_code) {
-        goto end;
-    }
-
-    end:
-        return result;
+end:
+    return result;
 }
 
 Any Any::operator<(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::int_code || type_code == semantics::types::float_code) {
+        result = Any(ToNumber() < other.ToNumber());
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::string_code) {
+        result = Any(ToString().length() < other.ToString().length());
         goto end;
     }
 
-    if (type_code == float_code) {
-        goto end;
-    }
+    if (type_code == semantics::types::vector_code)
+        result = Any(ToVector().size() < other.ToVector().size());
 
-    if (type_code == string_code) {
-        goto end;
-    }
-
-    if (type_code == vector_code) {
-        goto end;
-    }
-
-    end:
-        return result;
+end:
+    return result;
 }
 
 Any Any::operator<=(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
     }
 
@@ -169,23 +148,23 @@ Any Any::operator+(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
     }
 
@@ -197,23 +176,23 @@ Any Any::operator-(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
     }
 
@@ -225,23 +204,23 @@ Any Any::operator*(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
     }
 
@@ -253,23 +232,23 @@ Any Any::operator/(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
     }
 
@@ -281,55 +260,24 @@ Any Any::operator%(const Any &other) const noexcept {
     Any result = null_value;
     const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code) {
+    if (type_code == semantics::types::bool_code) {
         goto end;
     }
 
-    if (type_code == int_code) {
+    if (type_code == semantics::types::int_code) {
         goto end;
     }
 
-    if (type_code == float_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == string_code) {
+    if (type_code == semantics::types::float_code) {
         goto end;
     }
 
-    if (type_code == vector_code) {
+    if (type_code == semantics::types::vector_code) {
         goto end;
-    }
-
-    end:
-        return result;
-}
-
-Any &Any::operator[](const Any &other) const noexcept {
-    const auto position = static_cast<size_t>(other.ToNumber());
-
-    Any &result = null_value;
-    const size_t type_code = m_any.type().hash_code();
-
-    if (type_code == bool_code) {
-        goto end;
-    }
-
-    if (type_code == int_code) {
-        goto end;
-    }
-
-    if (type_code == float_code) {
-        goto end;
-    }
-
-    if (type_code == string_code) {
-        goto end;
-    }
-
-    if (type_code == vector_code) {
-        const auto value = AnyCast<std::vector<Any>>();
-        result = value[position];
     }
 
 end:
@@ -338,15 +286,11 @@ end:
 
 double Any::ToNumber() const noexcept {
     double result = 0;
-    const size_t type_code = m_any.type().hash_code();
 
-    if (type_code == bool_code ||
-        type_code == string_code ||
-        type_code == vector_code) {
-        goto end;
-    }
-
-    result = type_code == int_code ? AnyCast<int>() : AnyCast<double>();
+    if (const size_t type_code = m_any.type().hash_code();
+        type_code == semantics::types::int_code ||
+        type_code == semantics::types::float_code)
+        result = type_code == semantics::types::int_code ? AnyCast<int>() : AnyCast<double>();
 
 end:
     return result;
