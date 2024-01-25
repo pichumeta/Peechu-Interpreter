@@ -6,5 +6,6 @@
 #define SEMANTICS_H
 
 #include "Tokens.h"
+#include "Types.h"
 
 #endif //SEMANTICS_H

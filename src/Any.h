@@ -6,9 +6,8 @@
 #define ANY_H
 
 #include <any>
-#include <utility>
 
-#include "semantics/Semantics.h"
+#include "utils/Utils.h"
 
 class Any {
 public:
@@ -16,6 +15,8 @@ public:
 
     explicit Any(std::any any) noexcept;
     explicit Any(const std::string &literal);
+
+    Any &operator=(const std::any &any) noexcept;
 
     Any operator&&(const Any &other) const noexcept;
     Any operator||(const Any &other) const noexcept;
@@ -41,6 +42,8 @@ public:
     [[nodiscard]] std::vector<Any> ToVector() const noexcept;
 
 private:
+    inline static const std::string vector_delim = ", ";
+
     template<class T>
     [[nodiscard]] T AnyCast() const noexcept;
 

@@ -5,6 +5,7 @@
 #ifndef STRING_H
 #define STRING_H
 
+#include <concepts>
 #include <format>
 #include <iostream>
 #include <sstream>
@@ -12,6 +13,13 @@
 #include <vector>
 
 namespace utils::string {
+    template<class T>
+    concept Container = requires(T a)
+    {
+        { a.begin() } -> std::same_as<typename T::const_iterator>;
+        { a.end() } -> std::same_as<typename T::const_iterator>;
+    };
+
     template<class T>
     std::string Join(const char *delim, const std::vector<T> &elements) noexcept {
         const T *last = &elements[elements.size() - 1];

@@ -5,7 +5,7 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-#include "semantics/Types.h"
+#include "semantics/Semantics.h"
 
 class Variable : public Any {
 public:

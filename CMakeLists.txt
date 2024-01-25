@@ -13,4 +13,14 @@ add_executable(Peechu_Interpreter main.cpp
         src/interpreter/Token.h
         src/semantics/Types.h
         src/Variable.h
-        src/Variable.cpp)
+        src/Variable.cpp
+        src/interpreter/Lexer.h
+        src/interpreter/Lexer.cpp
+        src/Inbuilt.h
+        src/interpreter/Parser.h
+        src/interpreter/Parser.cpp
+        src/interpreter/Error.h
+        src/interpreter/Scope.h
+        src/interpreter/Scope.cpp
+        src/interpreter/Function.h
+        src/interpreter/Function.cpp)
