@@ -31,20 +31,22 @@ Token *Lexer::GetToken() noexcept {
     for (const auto &c : m_text) {
         token_string += c;
 
-        if (bool _break = false; std::ranges::any_of(semantics::tokens::literal_chars,
+        if (bool _break, _continue = false; std::ranges::any_of(semantics::tokens::literal_chars,
         [&](const char literal) {
             const size_t occurence_number =
                 std::ranges::count(token_string, literal);
 
             if (occurence_number <= 0) return false;
 
-            _break = occurence_number == 2;
             token_type = semantics::tokens::TokenType::Literal;
+
+            _break = occurence_number == 2;
+            _continue = token_string[0] == literal;
 
             return true;
         })) {
-            //if (cont) continue;
             if (_break) break;
+            if (_continue) continue;
         }
 
         const size_t token_length = token_string.length();

@@ -7,14 +7,14 @@
 
 #include "semantics/Semantics.h"
 
-class Variable : public Any {
+class Variable final : public Any {
 public:
     explicit Variable(const std::any &any, std::string name) noexcept;
 
     [[nodiscard]] std::string name() const noexcept;
-    void set_name(const std::string &name) noexcept;
+    void set_name(const std::string &name) noexcept override;
 
-    [[nodiscard]] bool pass_by_ref() const noexcept;
+    [[nodiscard]] bool pass_by_ref() const noexcept override;
     void set_pass_by_ref(bool pass_by_ref) noexcept;
 
 private:

@@ -1,15 +1,6 @@
-#include "src/interpreter/Parser.h"
-
-/*
-
-std::vector<std::vector<std::vector<size_t>>>
-[Arg level][Arg number][Index]
-
-*/
+#include "src/interpreter/Interpreter.h"
 
 int main() {
-    const auto lexer = new Lexer("let = peechu");
-    auto tokens = lexer->tokens();
-    const auto parser = new Parser(std::move(tokens));
-    Throw(error::Error::Syntax, "test");
+    const std::string file_path = "../examples/control_flow.peechu";
+    interpreter::Run(file_path);
 }

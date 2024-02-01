@@ -9,17 +9,24 @@
 
 class Scope {
 public:
-    explicit Scope(std::vector<std::vector<ParsedToken *>> &&parsed_tokens, std::vector<Scope *> &&functions,
-        std::vector<Variable *> &variables) noexcept;
+    explicit Scope(std::vector<std::vector<ParsedToken *>> parsed_tokens, std::vector<std::shared_ptr<Scope>> functions,
+        std::vector<std::shared_ptr<Variable>> variables) noexcept;
+    virtual ~Scope() noexcept = default;
 
-    virtual Any Call(const std::vector<Any &> args) noexcept { return null_value; }
-    void Run() noexcept;
+    std::pair<Any, ControlFlow> operator()() noexcept;
+
+    virtual std::pair<Any, ControlFlow> Run(const std::vector<std::shared_ptr<Any>> &args) noexcept;
+
+    [[nodiscard]] virtual std::string get_name() const noexcept { return ""; }
 
 protected:
+    [[nodiscard]] std::shared_ptr<Scope> FindFunction(const std::string &function_name) const noexcept;
+    [[nodiscard]] std::shared_ptr<Variable> FindVariable(const std::string &variable_name) const noexcept;
+
     std::vector<std::vector<ParsedToken *>> m_parsed_tokens;
 
-    std::vector<Scope *> m_functions;
-    std::vector<Variable *> &m_variables;
+    std::vector<std::shared_ptr<Scope>> m_functions;
+    std::vector<std::shared_ptr<Variable>> m_variables;
 
 };
 

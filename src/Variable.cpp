@@ -4,7 +4,7 @@
 
 #include "Variable.h"
 
-Variable::Variable(const std::any &any, std::string name) noexcept : Any::Any(any), m_name(std::move(name)) {
+Variable::Variable(const std::any &any, std::string name) noexcept : Any(any), m_name(std::move(name)) {
 
 }
 

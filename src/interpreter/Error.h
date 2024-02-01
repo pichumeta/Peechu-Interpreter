@@ -5,11 +5,13 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include "Variable.h"
+#include <iostream>
+
+#include "../Variable.h"
 
 namespace error {
-    inline constinit const char *red = "\033[31m";
-    inline constinit const char *white = "\033[37m";
+    inline const char *red = "\033[31m";
+    inline const char *white = "\033[37m";
 
     enum class Error {
         Argument,

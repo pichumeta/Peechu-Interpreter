@@ -5,6 +5,7 @@
 #ifndef SEMANTICS_H
 #define SEMANTICS_H
 
+#include "ControlFlow.h"
 #include "Tokens.h"
 #include "Types.h"
 

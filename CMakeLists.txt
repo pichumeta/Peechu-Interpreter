@@ -23,4 +23,9 @@ add_executable(Peechu_Interpreter main.cpp
         src/interpreter/Scope.h
         src/interpreter/Scope.cpp
         src/interpreter/Function.h
-        src/interpreter/Function.cpp)
+        src/interpreter/Function.cpp
+        src/interpreter/Loop.h
+        src/interpreter/Loop.cpp
+        src/semantics/ControlFlow.h
+        src/interpreter/Interpreter.h
+        src/utils/File.h)

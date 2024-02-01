@@ -1,0 +1,16 @@
+(fun) fizz_buzz(num) {
+    if num % 15 == 0 {
+        return "FizzBuzz"
+    }
+
+    if num % 5 == 0 {
+        return "Buzz"
+    }
+
+    if num % 3 == 0 {
+        return "Fizz"
+    }
+}
+
+let m = fizz_buzz(30)
+println("m: ", m)

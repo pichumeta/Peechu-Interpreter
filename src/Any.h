@@ -13,8 +13,15 @@ class Any {
 public:
     static bool IsLiteral(const std::string &literal) noexcept;
 
+    Any() noexcept = default;
+
     explicit Any(std::any any) noexcept;
     explicit Any(const std::string &literal);
+
+    virtual ~Any() = default;
+
+    [[nodiscard]] virtual bool pass_by_ref() const noexcept { return false; };
+    virtual void set_name(const std::string &name) {};
 
     Any &operator=(const std::any &any) noexcept;
 

@@ -9,7 +9,7 @@
 #include <cmath>
 #include <functional>
 
-#include "Error.h"
+#include "interpreter/Error.h"
 
 namespace inbuilt {
     inline const Any one(1);
@@ -111,86 +111,134 @@ namespace inbuilt {
     }
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &)>> maths_unary_operators {
-        {semantics::tokens::decrement_str, Decrement},
-        {semantics::tokens::increment_str, Increment}
+            {semantics::tokens::decrement_str, Decrement},
+            {semantics::tokens::increment_str, Increment}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &)>> logical_unary_operators {
-        {semantics::tokens::not_str, Not}
+            {semantics::tokens::not_str, Not}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &, const Any &)>> maths_operators {
-        {semantics::tokens::division_str, Division},
-        {semantics::tokens::multiplication_str, Multiplication},
-        {semantics::tokens::remainder_str, Remainder},
-        {semantics::tokens::addition_str, Addition},
-        {semantics::tokens::substraction_str, Subtraction}
+            {semantics::tokens::division_str, Division},
+            {semantics::tokens::multiplication_str, Multiplication},
+            {semantics::tokens::remainder_str, Remainder},
+            {semantics::tokens::addition_str, Addition},
+            {semantics::tokens::substraction_str, Subtraction}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &, const Any &)>> comparison_operators {
-        {semantics::tokens::greater_than_str, GreaterThan},
-        {semantics::tokens::greater_than_or_equal_to_str, GreaterThanOrEqual},
-        {semantics::tokens::less_than_str, LessThan},
-        {semantics::tokens::less_than_or_equal_to_str, LessThanOrEqualTo},
-        {semantics::tokens::equal_to_str, EqualTo},
-        {semantics::tokens::not_equal_to_str, NotEqualTo}
+            {semantics::tokens::greater_than_str, GreaterThan},
+            {semantics::tokens::greater_than_or_equal_to_str, GreaterThanOrEqual},
+            {semantics::tokens::less_than_str, LessThan},
+            {semantics::tokens::less_than_or_equal_to_str, LessThanOrEqualTo},
+            {semantics::tokens::equal_to_str, EqualTo},
+            {semantics::tokens::not_equal_to_str, NotEqualTo}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &, const Any &)>> bitwise_operators {
-        {semantics::tokens::bitwise_and_str, BitwiseAnd},
-        {semantics::tokens::bitwise_or_str, BitwiseOr}
+            {semantics::tokens::bitwise_and_str, BitwiseAnd},
+            {semantics::tokens::bitwise_or_str, BitwiseOr}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &, const Any &)>> logical_operators {
-        {semantics::tokens::logical_and_str, LogicalAnd},
-        {semantics::tokens::logical_or_str, LogicalOr}
+            {semantics::tokens::logical_and_str, LogicalAnd},
+            {semantics::tokens::logical_or_str, LogicalOr}
     };
 
     inline const std::unordered_map<std::string, std::function<Any(const Any &, const Any &)>> assignment_operators {
-        {semantics::tokens::direct_assignment_str, DirectAssignment},
-        {semantics::tokens::sum_assignment_str, SumAssignment},
-        {semantics::tokens::differnce_assignment_str, DifferenceAssignment},
-        {semantics::tokens::product_assignment_str, ProductAssignment},
-        {semantics::tokens::division_assignment_str, DifferenceAssignment},
-        {semantics::tokens::remainder_assignment_str, RemainderAssignment}
+            {semantics::tokens::direct_assignment_str, DirectAssignment},
+            {semantics::tokens::sum_assignment_str, SumAssignment},
+            {semantics::tokens::differnce_assignment_str, DifferenceAssignment},
+            {semantics::tokens::product_assignment_str, ProductAssignment},
+            {semantics::tokens::division_assignment_str, DifferenceAssignment},
+            {semantics::tokens::remainder_assignment_str, RemainderAssignment}
     };
 
-    inline Any Print(const std::vector<Any &> &args) {
+    inline void ArgCheck(const size_t expected, const std::vector<std::shared_ptr<Any>> &args) {
+        if (args.size() < expected) {
+            const std::string message = std::format("expected at least: {} arguments", expected);
+            error::Throw(error::Error::Argument, message);
+        }
+    }
+
+    inline Any Print(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 0;
+        ArgCheck(expected, args);
+
         std::vector<std::string> strings;
         for (const auto &arg : args)
-            strings.emplace_back(arg.ToString());
+            strings.emplace_back(arg->ToString());
 
         std::cout << utils::string::Join(" ", strings);
         return null_value;
     }
 
-    inline Any PrintLine(const std::vector<Any &> &args) {
+    inline Any PrintLine(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 0;
+        ArgCheck(expected, args);
+
         Print(args);
 
         std::cout << "\n";
         return null_value;
     }
 
-    inline Any Log(const std::vector<Any &> &args) {
-        if (args.size() == 1) {
-            const double result = std::log(args[0].ToNumber());
-            return result == static_cast<int>(result) ? Any(static_cast<int>(result)) : Any(result);
-        }
+    inline Any Log(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 1;
+        ArgCheck(expected, args);
 
-        const double result = std::log(args[1].ToNumber()) / std::log(args[0].ToNumber());
+        const double result = args.size() == 1 ? std::log(args[0]->ToNumber()) :
+            std::log(args[1]->ToNumber()) / std::log(args[0]->ToNumber());
+
         return result == static_cast<int>(result) ? Any(static_cast<int>(result)) : Any(result);
     }
 
-    inline Any Input(const std::vector<Any &> &args) {
+    inline Any Input(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 0;
+        ArgCheck(expected, args);
+
         PrintLine(args);
         std::string input;
         std::getline(std::cin, input);
         return Any(std::any(input));
     }
 
-    inline const std::unordered_map<std::string, std::function<Any(const std::vector<Any &> &)>> functions {
+    inline Any Join(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 2;
+        ArgCheck(expected, args);
+
+        std::vector<std::string> strings;
+        for (const auto &arg : args[1]->ToVector())
+            strings.emplace_back(arg.ToString());
+
+        return Any(std::any(utils::string::Join(args[0]->ToString().c_str(), strings)));
+    }
+
+
+
+    inline Any Vector(const std::vector<std::shared_ptr<Any>> &args) {
+        constexpr size_t expected = 0;
+        ArgCheck(expected, args);
+
+        const Any any(std::vector<Any>(args.size()));
+
+        for (const auto &arg : args)
+            SumAssignment(any, *arg);
+
+        return any;
+    }
+
+    inline const std::unordered_map<std::string, std::function<Any(const std::vector<std::shared_ptr<Any>> &)>> functions {
         {"print", Print},
-        {"println", PrintLine}
+        {"println", PrintLine},
+
+        {"log", Log},
+
+        {"input", Input},
+        {"join", Join},
+
+        {"vec", Vector}
     };
 }
 

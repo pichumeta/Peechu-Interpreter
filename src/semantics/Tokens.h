@@ -11,76 +11,92 @@
 #include "../utils/Utils.h"
 
 namespace semantics::tokens {
+    constexpr int first = -1;
+    constexpr int pre_expression = 0;
+    constexpr int post_expression = 100;
+    constexpr int literal = 10;
+    constexpr int identifier = literal;
+    constexpr int unary_op = 30;
+    constexpr int maths_op = 40;
+    constexpr int comparison_op = 50;
+    constexpr int bitwise_op = 60;
+    constexpr int logical_op = 70;
+    constexpr int assignment_op = 80;
+
     enum class Tokens {
         // Whitespace:
-        Flush,
-        Space,
+        Flush = first,
+        Space = first,
 
         // Line separators:
-        NewLine,
+        NewLine = first,
 
         // Keywords:
-        Else,
-        Function,
-        If,
-        Loop,
-        PassByReference,
-        Return,
-        VariableInitialiser,
+        Else = post_expression + 9,
+        Function = pre_expression + 8,
+        If = post_expression + 7,
+        Loop = post_expression + 6,
+        PassByReference = pre_expression + 5,
+        Return = post_expression + 4,
+        Break = post_expression + 2,
+        Continue = post_expression + 3,
+        VariableInitialiser = pre_expression + 1,
 
         // Identifiers
-        FunctionName,
-        VariableName,
+        FunctionName = identifier,
+        VariableName = identifier,
 
         //
         // FunctionCall,
         // MemberAccess,
 
         // Maths unary operators:
-        Decrement,
-        Increment,
+        Decrement = unary_op,
+        Increment = unary_op,
 
         // Logical unary operators:
-        Not,
+        Not = unary_op,
 
         // Maths operators (left to right):
-        Division,
-        Multiplication,
-        Remainder,
+        Division = maths_op,
+        Multiplication = maths_op,
+        Remainder = maths_op,
 
-        Addition,
-        Subtraction,
+        Addition = maths_op + 5,
+        Subtraction = maths_op + 5,
 
         // Comparison operators (left to right):
         // (relational)
-        GreaterThan,
-        GreaterThanOrEqualTo,
-        LessThan, // I usually prefer to say lower than or smaller than
-        LessThanOrEqualTo,
+        GreaterThan = comparison_op,
+        GreaterThanOrEqualTo = comparison_op,
+        LessThan = comparison_op, // I usually prefer to say lower than or smaller than
+        LessThanOrEqualTo = comparison_op,
         // (equality)
-        EqualTo,
-        NotEqualTo,
+        EqualTo = comparison_op,
+        NotEqualTo = comparison_op,
 
         // Bitwise operators (left to right):
-        BitwiseAnd,
-        BitwiseOr,
+        BitwiseAnd = bitwise_op,
+        BitwiseOr = bitwise_op + 5,
 
         // Logical operators (left to right):
-        LogicalAnd,
-        LogicalOr,
+        LogicalAnd = logical_op,
+        LogicalOr = logical_op + 5,
 
         // Assigment operators
-        DirectAssigment,
-        SumAssignment,
-        DifferenceAssignment,
-        ProductAssignment,
-        DivisionAssginment,
-        RemainderAssignment,
+        DirectAssigment = assignment_op,
+        SumAssignment = assignment_op,
+        DifferenceAssignment = assignment_op,
+        ProductAssignment = assignment_op,
+        DivisionAssginment = assignment_op,
+        RemainderAssignment = assignment_op,
 
         // Separators:
-        Comma,
-        OpenBracket,
-        ClosedBracket,
+        Comma = first,
+        OpenBracket = first,
+        ClosedBracket = first,
+        ScopeBegin = post_expression + 10,
+        ScopeEnd = post_expression + 11,
     };
 
     enum class TokenType {
@@ -118,6 +134,8 @@ namespace semantics::tokens {
     inline const std::string function_str = "fun";
     inline const std::string if_str = "if";
     inline const std::string loop_str = "loop";
+    inline const std::string break_str = "break";
+    inline const std::string continue_str = "continue";
     inline const std::string pass_by_reference_str = "ref";
     inline const std::string return_str = "return";
     inline const std::string variable_initialiser_str = "let";
@@ -161,6 +179,8 @@ namespace semantics::tokens {
     inline const std::string comma_str = ",";
     inline const std::string open_bracket_str = "(";
     inline const std::string closed_bracket_str = ")";
+    inline const std::string scope_begin_str = "{";
+    inline const std::string scope_end_str = "}";
 
     inline const std::string flush_str = "\r";
     inline const std::string space_str = " ";
@@ -170,6 +190,8 @@ namespace semantics::tokens {
         {function_str, Tokens::Function},
         {if_str, Tokens::If},
         {loop_str, Tokens::Loop},
+        {break_str, Tokens::Break},
+        {continue_str, Tokens::Continue},
         {pass_by_reference_str, Tokens::PassByReference},
         {return_str, Tokens::Return},
         {variable_initialiser_str, Tokens::VariableInitialiser}
@@ -218,7 +240,7 @@ namespace semantics::tokens {
         {bitwise_or_str, Tokens::BitwiseOr}
     };
 
-    inline auto bitwise_operators_keys = bitwise_operators | std::views::keys;
+    inline const auto bitwise_operators_keys = bitwise_operators | std::views::keys;
 
     inline const std::unordered_map<std::string, Tokens> logical_operators {
         {logical_and_str, Tokens::LogicalAnd},
@@ -247,7 +269,9 @@ namespace semantics::tokens {
     inline const std::unordered_map<std::string, Tokens> separators {
         {comma_str, Tokens::Comma},
         {open_bracket_str, Tokens::OpenBracket},
-        {closed_bracket_str, Tokens::ClosedBracket}
+        {closed_bracket_str, Tokens::ClosedBracket},
+        {scope_begin_str, Tokens::ScopeBegin},
+        {scope_end_str, Tokens::ScopeEnd}
     };
 
     inline const auto separators_keys = separators | std::views::keys;
@@ -275,21 +299,76 @@ namespace semantics::tokens {
 
     inline const std::unordered_map<TokenType, std::vector<TokenType>> expects {
         {TokenType::Literal, {TokenType::MathsUnaryOperator, TokenType::LogicalUnaryOperator, TokenType::MathsOperator,
-                TokenType::ComparisonOperator, TokenType::BitwiseOperator, TokenType::LogicalOperator, TokenType::Separator}},
-        {TokenType::Keyword, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
+                TokenType::ComparisonOperator, TokenType::BitwiseOperator, TokenType::LogicalOperator, TokenType::Separator, TokenType::LineSeparator}},
+        {TokenType::Keyword, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
         {TokenType::Variable, {TokenType::MathsOperator, TokenType::ComparisonOperator, TokenType::LogicalOperator,
-            TokenType::BitwiseOperator, TokenType::AssignmentOperator, TokenType::Separator}},
-        {TokenType::Function, {TokenType::Separator}},
-        {TokenType::LogicalUnaryOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::MathsUnaryOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::MathsOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::ComparisonOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::BitwiseOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::LogicalOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::AssignmentOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function}},
-        {TokenType::Separator, {TokenType::Literal, TokenType::Variable, TokenType::Function}}
+            TokenType::BitwiseOperator, TokenType::AssignmentOperator, TokenType::Separator, TokenType::LineSeparator}},
+        {TokenType::Function, {TokenType::Separator, TokenType::LineSeparator}},
+        {TokenType::LogicalUnaryOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::MathsUnaryOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::MathsOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::ComparisonOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::BitwiseOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::LogicalOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::AssignmentOperator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::LineSeparator}},
+        {TokenType::Separator, {TokenType::Literal, TokenType::Variable, TokenType::Function, TokenType::MathsOperator,
+            TokenType::ComparisonOperator, TokenType::BitwiseOperator, TokenType::LogicalOperator, TokenType::AssignmentOperator, TokenType::LineSeparator}}
     };
 
-    inline const std::unordered_map<std::string, Tokens> tokens;
+    inline const std::unordered_map<std::string, Tokens> tokens {
+        {else_str, Tokens::Else},
+        {function_str, Tokens::Function},
+        {if_str, Tokens::If},
+        {loop_str, Tokens::Loop},
+        {break_str, Tokens::Break},
+        {continue_str, Tokens::Continue},
+        {pass_by_reference_str, Tokens::PassByReference},
+        {return_str, Tokens::Return},
+        {variable_initialiser_str, Tokens::VariableInitialiser},
+
+        {decrement_str, Tokens::Decrement},
+        {increment_str, Tokens::Increment},
+
+        {not_str, Tokens::Not},
+
+        {division_str, Tokens::Division},
+        {multiplication_str, Tokens::Multiplication},
+        {remainder_str, Tokens::Remainder},
+
+        {addition_str, Tokens::Addition},
+        {substraction_str, Tokens::Subtraction},
+
+        {greater_than_str, Tokens::GreaterThan},
+        {greater_than_or_equal_to_str, Tokens::GreaterThanOrEqualTo},
+        {less_than_str, Tokens::LessThan},
+        {less_than_or_equal_to_str, Tokens::LessThanOrEqualTo},
+
+        {equal_to_str, Tokens::EqualTo},
+        {not_equal_to_str, Tokens::NotEqualTo},
+
+        {bitwise_and_str, Tokens::BitwiseAnd},
+        {bitwise_or_str, Tokens::BitwiseOr},
+
+        {logical_and_str, Tokens::LogicalAnd},
+        {logical_or_str, Tokens::LogicalOr},
+
+        {direct_assignment_str, Tokens::DirectAssigment},
+        {sum_assignment_str, Tokens::SumAssignment},
+        {differnce_assignment_str, Tokens::DifferenceAssignment},
+        {product_assignment_str, Tokens::ProductAssignment},
+        {division_assignment_str, Tokens::DivisionAssginment},
+        {remainder_assignment_str, Tokens::RemainderAssignment},
+
+        {new_line_str, Tokens::NewLine},
+
+        {comma_str, Tokens::Comma},
+        {open_bracket_str, Tokens::OpenBracket},
+        {closed_bracket_str, Tokens::ClosedBracket},
+        {scope_begin_str, Tokens::ScopeBegin},
+        {scope_end_str, Tokens::ScopeEnd},
+
+        {flush_str, Tokens::Flush},
+        {space_str, Tokens::Space}
+    };
 }
 #endif //TOKENS_H

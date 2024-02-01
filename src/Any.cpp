@@ -61,7 +61,7 @@ void Any::set_any(const std::any &any) noexcept {
 
 template<class T>
 T Any::AnyCast() const noexcept {
-    return std::any_cast<T>(*this);
+    return std::any_cast<T>(m_any);
 }
 
 Any Any::operator&&(const Any &other) const noexcept {
